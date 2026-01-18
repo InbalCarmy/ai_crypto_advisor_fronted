@@ -14,7 +14,7 @@ export function LoginPage(){
 
         try {
             await login(credentials)
-            navigate('/dashboard')
+            navigate('/onboarding')
         } catch (err) {
             console.error('Login failed:', err)
         }

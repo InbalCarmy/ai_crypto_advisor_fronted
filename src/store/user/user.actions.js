@@ -1,5 +1,5 @@
 import { userService } from "../../services/user.service";
-import { SET_USERS, SET_USER, REMOVE_USER } from "./user.reducer";
+import { SET_USERS, SET_USER, REMOVE_USER, UPDATE_USER } from "./user.reducer";
 import { store } from '../store'
 import { showErrorMsg, showSuccessMsg } from "../../services/event-bus.service";
 
@@ -12,6 +12,18 @@ export async function loadUsers(){
     } catch(err) {
         console.log('UserAction: err in loadUsers', err);
         
+    }
+}
+
+export async function updateUser(user) {
+    try {
+        
+        const savedUser = await userService.update(user)
+        store.dispatch({type: UPDATE_USER, savedUser})
+        return savedUser
+    } catch (err) {
+        console.log('Cannot save user', err)
+        throw err
     }
 }
 

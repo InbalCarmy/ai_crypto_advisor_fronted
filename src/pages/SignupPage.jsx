@@ -17,9 +17,11 @@ export function SignupPage(){
     async function onSignup(ev = null) {
         if (ev) ev.preventDefault()
         if (!credentials.name || !credentials.password || !credentials.email) return
+        console.log("cred:", credentials);
+        
         try {
             await signup(credentials)
-            navigate('/dashboard')
+            navigate('/onboarding')
         } catch (err) {
             console.error('Signup failed:', err)
         }

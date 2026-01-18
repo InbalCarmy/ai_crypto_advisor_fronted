@@ -35,17 +35,18 @@ async function login(userCred) {
 	if (user) return _saveLocalUser(user)
 }
 
-async function update({ _id, score }) {
-	const user = await httpService.put(`user/${_id}`, { _id, score })
-
-	// When admin updates other user's details, do not update loggedinUser
-    const loggedinUser = getLoggedinUser() // Might not work because its defined in the main service???
-    if (loggedinUser._id === user._id) _saveLocalUser(user)
-
-	return user
+async function update(user) {  
+    console.log(`user/${user._id}`);
+      
+	const updatedUser = await httpService.put(`user/${user._id}`, user)
+    const loggedinUser = getLoggedinUser()
+    if (loggedinUser._id === updatedUser._id) _saveLocalUser(updatedUser)
+	return updatedUser
 }
 
 async function signup(userCred) {
+    console.log("signup:", userCred);
+    
     const user = await httpService.post('auth/signup', userCred)
 	return _saveLocalUser(user)
 }
@@ -68,7 +69,13 @@ function getEmptyUser() {
 }
 
 function _saveLocalUser(user) {
-	user = { _id: user._id, name: user.name,email: user.email }
-	sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
-	return user
+    const userToSave = { 
+        _id: user._id, 
+        name: user.name,
+        email: user.email,
+        isOnboarded: user.isOnboarded,
+        preferences: user.preferences
+    }
+    sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(userToSave))
+    return userToSave
 }

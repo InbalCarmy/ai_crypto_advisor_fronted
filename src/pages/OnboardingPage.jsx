@@ -1,6 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { updateUser } from "../store/user/user.actions"
+import { Link } from "react-router-dom"
 
 export function OnboardingPage(){
     const user = useSelector(storeState => storeState.userModule.user)
@@ -10,6 +12,13 @@ export function OnboardingPage(){
         contentKind: []
     })
     const navigate = useNavigate()
+
+    useEffect(()=> {
+        if(user?.isOnboarded){
+            navigate('/dashboard')
+        }       
+    })
+
 
     function handleCheckboxChange(ev) {
         const { name, value, checked } = ev.target
@@ -31,12 +40,37 @@ export function OnboardingPage(){
         })
     }
 
-    function handleSubmit(ev) {
+    async function handleSubmit(ev) {
         ev.preventDefault()
         console.log('Selected preferences:', preferences)
+
+        try{
+            const updatedUser = {
+                ...user,
+                preferences: preferences,
+                isOnboarded: true
+            }
+            
+            await updateUser(updatedUser)
+            navigate('/dashboard')
+        } catch (err){
+            console.log('Faild to save preferences', err);
+            
+        }
         // TODO: Save preferences to backend or store
-        
-        navigate('/dashboard')
+    }
+
+    if(!user){
+        return(
+            <section>
+                <div>
+                    <h1>Please log in</h1>
+                <Link to='/'>
+                <button> login page </button>
+                </Link>
+                </div>
+            </section>
+        )
     }
 
     return(
