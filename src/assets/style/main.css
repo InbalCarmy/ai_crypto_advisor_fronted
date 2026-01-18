@@ -9,6 +9,10 @@
 /* Components */
 @import './cmps/AppHeader.css';
 @import './cmps/UserMsg.css';
+@import './cmps/CoinPrices.css';
+@import './cmps/MarketNews.css';
+@import './cmps/AIInsight.css';
+@import './cmps/CryptoMeme.css';
 
 
 
@@ -16,6 +20,7 @@
 /* Pages */
 @import './pages/LoginPage.css';
 @import './pages/SignupPage.css';
+@import './pages/Dashboard.css';
 
 
 @import './setup/var.css';

@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import { CoinPrices } from "../cmps/CoinPrices"
+import { MarketNews } from "../cmps/MarketNews"
+import { AIInsight } from "../cmps/AIInsight"
 
 
 export function Dashboard(){
     const user = useSelector(storeState => storeState.userModule.user)
-
-
 
     if(!user){
         return(
@@ -22,7 +23,21 @@ export function Dashboard(){
 
     return(
         <section className="dashboard-page">
-            <h1>Dashboard Page</h1>
+            <h1>Welcome back, {user.name}!</h1>
+
+            <div className="dashboard-grid">
+                <CoinPrices cryptoAssets={user.preferences?.cryptoAssets || []} />
+
+                <MarketNews preferences={user.preferences} />
+
+                <AIInsight preferences={user.preferences} />
+
+                <div className="fun-crypto-meme">
+                    <h2>Crypto Meme</h2>
+                    <p>Coming soon...</p>
+                </div>
+            </div>
         </section>
+
     )
 }

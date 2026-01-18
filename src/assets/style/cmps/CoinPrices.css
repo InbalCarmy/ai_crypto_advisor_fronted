@@ -1,0 +1,75 @@
+.coin-prices-card {
+    background-color: var(--bg-secondary, #f8f9fa);
+}
+
+.coin-prices-card h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.badge{
+  margin-left: 8px;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.15);
+  color: var(--accent);
+}
+
+
+.coin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.coin-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.coin-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.coin-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+}
+
+.coin-price {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.coin-change {
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.coin-change.positive {
+    color: #10b981;
+    background-color: #d1fae5;
+}
+
+.coin-change.negative {
+    color: #ef4444;
+    background-color: #fee2e2;
+}
+
+.coin-prices-card .error {
+    color: #ef4444;
+    padding: 1rem;
+    background-color: #fee2e2;
+    border-radius: 4px;
+}

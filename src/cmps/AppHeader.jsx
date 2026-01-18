@@ -29,7 +29,7 @@ export function AppHeader(){
 
     return(
         <header className="app-header">
-            <h1>AI Crypto Provider</h1>
+            <h1>AI Crypto Advisor</h1>
             {user &&
                 <button onClick={onLogout}>
                     Logout
