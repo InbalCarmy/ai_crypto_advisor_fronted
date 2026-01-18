@@ -4,16 +4,20 @@ import { login } from "../store/user/user.actions"
 
 
 export function LoginPage(){
-    const [credentials, setCredentials] = useState({name: '', email: '' ,password: ''})
+    const [credentials, setCredentials] = useState({email: '' ,password: ''})
     const navigate = useNavigate()
 
 
     async function onLogin(ev = null) {
         if (ev) ev.preventDefault()
-        if (!credentials.name) return
-        await login(credentials)
-        navigate('/dashboard')
+        if (!credentials.email || !credentials.password) return
 
+        try {
+            await login(credentials)
+            navigate('/dashboard')
+        } catch (err) {
+            console.error('Login failed:', err)
+        }
     }
 
     function handleChange(ev) {
@@ -27,36 +31,30 @@ export function LoginPage(){
     return(
         <section>
             <form className="login-form" onSubmit={onLogin}>
-                <label htmlFor="name">Name:</label>
-                <input 
-                    type="text"
-                    placeholder="Enter name"
-                    id="name"
-                    name="name"
-                    onChange={handleChange}
-                    value={credentials.name}
-                 />
                 <label htmlFor="email">Email:</label>
-                <input 
-                    type="text"
+                <input
+                    type="email"
                     placeholder="Enter email"
                     id="email"
                     name="email"
                     onChange={handleChange}
                     value={credentials.email}
+                    required
                  />
                 <label htmlFor="password">Password:</label>
-                <input 
-                    type="text"
+                <input
+                    type="password"
                     placeholder="Password"
                     id="password"
-                    name="password" 
+                    name="password"
                     onChange={handleChange}
-                    value={credentials.password}/>
+                    value={credentials.password}
+                    required
+                />
                 <button>Login</button>
                 <div>
-                    Don't have an account? <Link to="/signup">Signup</Link> 
-                </div>                
+                    Don't have an account? <Link to="/signup">Signup</Link>
+                </div>
             </form>
 
     </section>

@@ -17,8 +17,12 @@ export function SignupPage(){
     async function onSignup(ev = null) {
         if (ev) ev.preventDefault()
         if (!credentials.name || !credentials.password || !credentials.email) return
-        await signup(credentials)
-        navigate('/dashboard')
+        try {
+            await signup(credentials)
+            navigate('/dashboard')
+        } catch (err) {
+            console.error('Signup failed:', err)
+        }
     }
 
 
@@ -38,7 +42,7 @@ export function SignupPage(){
                         
                 <label htmlFor="email">Email:</label>
                 <input 
-                    type="text"
+                    type="email"
                     placeholder="Enter email"
                     id="email"
                     name="email"
@@ -47,11 +51,11 @@ export function SignupPage(){
                  />
                 
                 <label htmlFor="password">Password:</label>
-                <input 
-                    type="text"
+                <input
+                    type="password"
                     placeholder="Password"
                     id="password"
-                    name="password" 
+                    name="password"
                     onChange={handleChange}
                     value={credentials.password}
                     required/>

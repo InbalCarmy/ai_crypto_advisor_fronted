@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage'
 import { SignupPage } from './pages/SignupPage'
 import { UserMsg } from './cmps/UserMsg'
 import { Dashboard } from './pages/Dashboard'
+import { OnboardingPage } from './pages/OnboardingPage'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path ="/" element ={<LoginPage/>}/>
         <Route path ="/signup" element ={<SignupPage/>}/>
         <Route path ="/dashboard" element ={<Dashboard/>}/>
+        <Route path ="/onboarding" element ={<OnboardingPage/>}/>
       </Routes>      
     </main>
 
