@@ -1,29 +1,37 @@
 import { useState, useEffect } from "react"
 
-// Curated collection of crypto meme URLs
-const CRYPTO_MEMES = [
-    "https://i.imgflip.com/5c7lwq.jpg", // Is this a bull market?
-    "https://i.imgflip.com/5c7m3f.jpg", // HODL
-    "https://i.imgflip.com/6qlmjd.jpg", // Crypto investor vs reality
-    "https://i.redd.it/7qvq8p0z8kb71.jpg", // Meanwhile at crypto
-    "https://preview.redd.it/oivj8mww8w481.jpg?width=640&crop=smart&auto=webp&s=3a2f2e1234567890abcdef1234567890abcdef12", // When you check portfolio
-    "https://i.imgflip.com/5c7lj2.jpg", // Buy high sell low
-]
-
 export function CryptoMeme() {
     const [currentMeme, setCurrentMeme] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [imageError, setImageError] = useState(false)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         loadRandomMeme()
     }, [])
 
-    function loadRandomMeme() {
-        setIsLoading(true)
-        // Get random meme from the collection
-        const randomIndex = Math.floor(Math.random() * CRYPTO_MEMES.length)
-        setCurrentMeme(CRYPTO_MEMES[randomIndex])
-        setIsLoading(false)
+    async function loadRandomMeme() {
+        try {
+            setIsLoading(true)
+            setImageError(false)
+            setError(null)
+
+            const response = await fetch('http://localhost:3030/api/meme')
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`)
+            }
+
+            const data = await response.json()
+            console.log("data url:", data.url);
+            
+            setCurrentMeme(data.url)
+        } catch (err) {
+            console.error('Error loading meme:', err)
+            setError(err.message || 'Failed to load meme')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     if (isLoading) {
@@ -35,22 +43,53 @@ export function CryptoMeme() {
         )
     }
 
+    if (error) {
+        return (
+            <div className="crypto-meme-card">
+                <h2>Crypto Meme of the Day</h2>
+                <div className="meme-container">
+                    <div style={{
+                        padding: '2rem',
+                        textAlign: 'center',
+                        color: '#666'
+                    }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>😅</div>
+                        <p>Failed to load meme</p>
+                        <p style={{ fontSize: '0.9rem' }}>{error}</p>
+                    </div>
+                </div>
+                <button onClick={loadRandomMeme} className="refresh-btn">
+                     Try Again
+                </button>
+            </div>
+        )
+    }
+
     return (
         <div className="crypto-meme-card">
             <h2>Crypto Meme of the Day</h2>
             <div className="meme-container">
-                <img
-                    src={currentMeme}
-                    alt="Crypto meme"
-                    className="meme-image"
-                    onError={(e) => {
-                        // Fallback if image fails to load
-                        e.target.src = "https://via.placeholder.com/400x300?text=Meme+Not+Available"
-                    }}
-                />
+                {imageError ? (
+                    <div style={{
+                        padding: '2rem',
+                        textAlign: 'center',
+                        color: '#666'
+                    }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>😅</div>
+                        <p>Oops! This meme couldn't load</p>
+                        <p style={{ fontSize: '0.9rem' }}>Try another one!</p>
+                    </div>
+                ) : (
+                    <img
+                        src={currentMeme}
+                        alt="Crypto meme"
+                        className="meme-image"
+                        onError={() => setImageError(true)}
+                    />
+                )}
             </div>
             <button onClick={loadRandomMeme} className="refresh-btn">
-                <span className="icon">🎲</span> Get Another Meme
+                Get Another Meme
             </button>
         </div>
     )

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { CoinPrices } from "../cmps/CoinPrices"
 import { MarketNews } from "../cmps/MarketNews"
 import { AIInsight } from "../cmps/AIInsight"
+import { CryptoMeme } from "../cmps/CryptoMeme"
 
 
 export function Dashboard(){
@@ -32,10 +33,7 @@ export function Dashboard(){
 
                 <AIInsight preferences={user.preferences} />
 
-                <div className="fun-crypto-meme">
-                    <h2>Crypto Meme</h2>
-                    <p>Coming soon...</p>
-                </div>
+                <CryptoMeme />
             </div>
         </section>
 

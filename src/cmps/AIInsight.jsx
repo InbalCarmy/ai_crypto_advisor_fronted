@@ -14,7 +14,6 @@ export function AIInsight({ preferences }) {
             setIsLoading(true)
             setError(null)
 
-            // Get user's crypto assets for personalized insight
             const cryptoAssets = preferences?.cryptoAssets || []
             const investorType = preferences?.investorType?.[0] || 'General'
 
@@ -22,6 +21,7 @@ export function AIInsight({ preferences }) {
                 assets: cryptoAssets.join(','),
                 investorType: investorType
             })
+            
 
             const response = await fetch(`http://localhost:3030/api/ai-insight?${params}`)
 
@@ -30,6 +30,7 @@ export function AIInsight({ preferences }) {
             }
 
             const data = await response.json()
+            
             setInsight(data.insight)
         } catch (err) {
             console.error('Error loading AI insight:', err)

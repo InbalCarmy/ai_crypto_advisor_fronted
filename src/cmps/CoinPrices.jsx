@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 const FALLBACK_COINS = [
   { id: "bitcoin", name: "Bitcoin", price: 42100, change24h: 1.25 },
@@ -16,38 +16,21 @@ export function CoinPrices({ cryptoAssets }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
-    useEffect(() => {
-        loadCoinPrices()
-    }, [cryptoAssets])
+    const loadCoinPrices = useCallback(async () => {
 
-    async function loadCoinPrices() {
         if (!cryptoAssets || cryptoAssets.length === 0) {
             setIsLoading(false)
             return
         }
+        try{
+            const params = new URLSearchParams({
+                assets: cryptoAssets.join(',')
+            })
 
-        try {
-            setIsLoading(true)
-            setError(null)
 
-            // Convert crypto names to CoinGecko IDs
-            const coinIds = cryptoAssets.join(',')
+            const response = await fetch(`http://localhost:3030/api/coin-prices?${params}`)
 
-            setIsFallback(false)
 
-            // CoinGecko API endpoint with demo API key to help with rate limits
-            const response = await fetch(
-                 `https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}` + `&vs_currencies=usd&include_24hr_change=true`,
-                {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                }
-            )
-
-            if (response.status === 429) {
-                throw new Error('Rate limit exceeded. Please wait a moment and refresh.')
-            }
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
@@ -55,29 +38,33 @@ export function CoinPrices({ cryptoAssets }) {
 
             const data = await response.json()
 
-            // Transform the data into an array format
             const coinArray = Object.keys(data).map(coinId => ({
                 id: coinId,
                 name: coinId.charAt(0).toUpperCase() + coinId.slice(1),
                 price: data[coinId].usd,
                 change24h: data[coinId].usd_24h_change
             }))
-
             setCoins(coinArray)
-        } catch (err) {
-        console.error('Error loading coin prices:', err)
 
-        // fallback: show static demo data filtered by user preferences
-        const idsSet = new Set((cryptoAssets || []).map(a => a.toLowerCase()))
-        const fallbackList = FALLBACK_COINS.filter(c => idsSet.has(c.id))
+        }catch (err) {
+            console.error('Error loading coin prices:', err)
 
-        setCoins(fallbackList.length ? fallbackList : FALLBACK_COINS.slice(0, 3))
-        setIsFallback(true)
-        setError(null)
+            // fallback: show static demo data filtered by user preferences
+            const idsSet = new Set((cryptoAssets || []).map(a => a.toLowerCase()))
+            const fallbackList = FALLBACK_COINS.filter(c => idsSet.has(c.id))
+
+            setCoins(fallbackList.length ? fallbackList : FALLBACK_COINS.slice(0, 3))
+            setIsFallback(true)
+            setError(null)
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [cryptoAssets])
+
+    useEffect(() => {
+        loadCoinPrices()
+    }, [loadCoinPrices])
+
 
     if (isLoading) {
         return (
