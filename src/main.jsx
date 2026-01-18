@@ -9,11 +9,10 @@ import { store } from './store/store'
 
 createRoot(document.getElementById('root')).render(
   	<Provider store={store}>
-
-  <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-    <App />
-  </BrowserRouter>
-  	</Provider>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <App />
+      </BrowserRouter>
+   </Provider>
 
 
 
