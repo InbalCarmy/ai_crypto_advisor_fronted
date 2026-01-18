@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 
 export function SignupPage(){
-    const [credentials, setCredentials] = useState({name: '', email:'', password: ''})
+    const [credentials, setCredentials] = useState({name: '', email:'', password: '', isOnboarded: false})
     const navigate = useNavigate()
 
     function handleChange(ev) {

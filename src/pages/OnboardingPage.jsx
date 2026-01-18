@@ -1,7 +1,9 @@
 import { useState } from "react"
+import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 export function OnboardingPage(){
+    const user = useSelector(storeState => storeState.userModule.user)
     const [preferences, setPreferences] = useState({
         cryptoAssets: [],
         investorType: [],
@@ -33,6 +35,7 @@ export function OnboardingPage(){
         ev.preventDefault()
         console.log('Selected preferences:', preferences)
         // TODO: Save preferences to backend or store
+        
         navigate('/dashboard')
     }
 
