@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react"
 
+const API_URL = import.meta.env.VITE_API_URL
+
+
 export function CryptoMeme() {
     const [currentMeme, setCurrentMeme] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
-    const [imageError, setImageError] = useState(false)
     const [error, setError] = useState(null)
 
     useEffect(() => {
@@ -13,18 +15,16 @@ export function CryptoMeme() {
     async function loadRandomMeme() {
         try {
             setIsLoading(true)
-            setImageError(false)
             setError(null)
 
-            const response = await fetch('http://localhost:3030/api/meme')
+
+            const response = await fetch(`${API_URL}/api/meme`)
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
             }
 
             const data = await response.json()
-            console.log("data url:", data.url);
-            
             setCurrentMeme(data.url)
         } catch (err) {
             console.error('Error loading meme:', err)
@@ -47,17 +47,6 @@ export function CryptoMeme() {
         return (
             <div className="crypto-meme-card">
                 <h2>Crypto Meme of the Day</h2>
-                <div className="meme-container">
-                    <div style={{
-                        padding: '2rem',
-                        textAlign: 'center',
-                        color: '#666'
-                    }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>😅</div>
-                        <p>Failed to load meme</p>
-                        <p style={{ fontSize: '0.9rem' }}>{error}</p>
-                    </div>
-                </div>
                 <button onClick={loadRandomMeme} className="refresh-btn">
                      Try Again
                 </button>
@@ -69,24 +58,11 @@ export function CryptoMeme() {
         <div className="crypto-meme-card">
             <h2>Crypto Meme of the Day</h2>
             <div className="meme-container">
-                {imageError ? (
-                    <div style={{
-                        padding: '2rem',
-                        textAlign: 'center',
-                        color: '#666'
-                    }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>😅</div>
-                        <p>Oops! This meme couldn't load</p>
-                        <p style={{ fontSize: '0.9rem' }}>Try another one!</p>
-                    </div>
-                ) : (
                     <img
                         src={currentMeme}
                         alt="Crypto meme"
                         className="meme-image"
-                        onError={() => setImageError(true)}
                     />
-                )}
             </div>
             <button onClick={loadRandomMeme} className="refresh-btn">
                 Get Another Meme

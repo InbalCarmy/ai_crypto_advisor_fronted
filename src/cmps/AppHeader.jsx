@@ -10,8 +10,6 @@ import { useSelector } from 'react-redux';
 export function AppHeader(){
     const navigate = useNavigate()
     const user = useSelector(storeState => storeState.userModule.user)
-
-    console.log("loggedin user:", user);
     
     async function onLogout(){
         try{

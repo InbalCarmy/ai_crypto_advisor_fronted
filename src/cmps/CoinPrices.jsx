@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from "react"
 
+const API_URL = import.meta.env.VITE_API_URL
+
+
 export function CoinPrices({ cryptoAssets }) {
     const [coins, setCoins] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -19,7 +22,7 @@ export function CoinPrices({ cryptoAssets }) {
                 assets: cryptoAssets.join(',')
             })
 
-            const response = await fetch(`http://localhost:3030/api/coin-prices?${params}`)
+            const response = await fetch(`${API_URL}/api/coin-prices?${params}`)
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
@@ -27,7 +30,6 @@ export function CoinPrices({ cryptoAssets }) {
 
             const data = await response.json()
 
-            // Transform the data into an array format
             const coinArray = Object.keys(data).map(coinId => ({
                 id: coinId,
                 name: coinId.charAt(0).toUpperCase() + coinId.slice(1),

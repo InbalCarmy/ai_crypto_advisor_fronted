@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
+import { dailyRefreshService } from "../services/dailyRefresh.service"
+
+const API_URL = import.meta.env.VITE_API_URL
 
 export function MarketNews({ preferences }) {
     const [news, setNews] = useState([])
@@ -10,10 +13,20 @@ export function MarketNews({ preferences }) {
             setIsLoading(true)
             setError(null)
 
+            //check if we nwwd to refresh data
+            if (!dailyRefreshService.shouldRefresh('marketNews')) {
+                const cachedNews = dailyRefreshService.getStoredData('marketNews')
+                if (cachedNews) {
+                    console.log('Using cached market news from today')
+                    setNews(cachedNews)
+                    setIsLoading(false)
+                    return
+                }
+            }
+
             // Get user's selected crypto assets to filter news
             const cryptoAssets = preferences?.cryptoAssets || []
 
-            // Build currencies parameter (CryptoPanic uses uppercase symbols)
             const currenciesMap = {
                 bitcoin: 'BTC',
                 ethereum: 'ETH',
@@ -28,12 +41,12 @@ export function MarketNews({ preferences }) {
                 .filter(Boolean)
                 .join(',')
 
-            // Call our backend API instead of CryptoPanic directly
+            // Call our backend API 
             const params = new URLSearchParams({
                 currencies: currencies || 'BTC,ETH'
             })
 
-            const response = await fetch(`http://localhost:3030/api/news?${params}`)
+            const response = await fetch(`${API_URL}/api/news?${params}`)
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
@@ -53,6 +66,8 @@ export function MarketNews({ preferences }) {
             }))
 
             setNews(articles)
+            dailyRefreshService.storeData('marketNews', articles)
+            dailyRefreshService.markAsRefreshed('marketNews')
         } catch (err) {
             console.error('Error loading news:', err)
             setError(err.message || 'Failed to load news')
@@ -113,14 +128,17 @@ export function MarketNews({ preferences }) {
                                     <span className="news-time">{article.publishedAt}</span>
                                 </div>
                             </div>
-                            <a
-                                href={article.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="news-link"
-                            >
-                                Read →
-                            </a>
+                            {article.url && (
+                                <a
+                                    href={article.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="news-link"
+                                >
+                                    Read →
+                                </a> 
+                            )}
+
                         </div>
                     ))}
                 </div>

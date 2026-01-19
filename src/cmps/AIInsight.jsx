@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react"
+import { dailyRefreshService } from "../services/dailyRefresh.service"
+
+const API_URL = import.meta.env.VITE_API_URL
+
 
 export function AIInsight({ preferences }) {
     const [insight, setInsight] = useState(null)
@@ -14,6 +18,17 @@ export function AIInsight({ preferences }) {
             setIsLoading(true)
             setError(null)
 
+            //check if we need to refresh data
+            if (!dailyRefreshService.shouldRefresh('aiInsight')) {
+                const cachedInsight = dailyRefreshService.getStoredData('aiInsight')
+                if (cachedInsight) {
+                    console.log('Using cached AI insight from today')
+                    setInsight(cachedInsight)
+                    setIsLoading(false)
+                    return
+                }
+            }
+
             const cryptoAssets = preferences?.cryptoAssets || []
             const investorType = preferences?.investorType?.[0] || 'General'
 
@@ -21,17 +36,18 @@ export function AIInsight({ preferences }) {
                 assets: cryptoAssets.join(','),
                 investorType: investorType
             })
-            
 
-            const response = await fetch(`http://localhost:3030/api/ai-insight?${params}`)
+            const response = await fetch(`${API_URL}/api/ai-insight?${params}`)
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
             }
 
             const data = await response.json()
-            
+
             setInsight(data.insight)
+            dailyRefreshService.storeData('aiInsight', data.insight)
+            dailyRefreshService.markAsRefreshed('aiInsight')
         } catch (err) {
             console.error('Error loading AI insight:', err)
             setError(err.message || 'Failed to load AI insight')
@@ -85,9 +101,9 @@ export function AIInsight({ preferences }) {
         <div className="insight-content">
         <p className="insight-text">{insight}</p>
         </div>
-            <button onClick={loadInsight} className="refresh-btn">
+            {/* <button onClick={loadInsight} className="refresh-btn">
                 Get New Insight
-            </button>
+            </button> */}
         </div>
     )
 }
