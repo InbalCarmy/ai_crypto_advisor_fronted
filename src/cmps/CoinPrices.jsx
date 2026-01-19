@@ -1,36 +1,25 @@
 import { useState, useEffect, useCallback } from "react"
 
-const FALLBACK_COINS = [
-  { id: "bitcoin", name: "Bitcoin", price: 42100, change24h: 1.25 },
-  { id: "ethereum", name: "Ethereum", price: 2300, change24h: -0.40 },
-  { id: "cardano", name: "Cardano", price: 0.55, change24h: 2.10 },
-  { id: "solana", name: "Solana", price: 98.2, change24h: -1.35 },
-  { id: "ripple", name: "Ripple", price: 0.62, change24h: 0.75 },
-  { id: "polygon", name: "Polygon", price: 0.89, change24h: 1.05 },
-];
-
-
 export function CoinPrices({ cryptoAssets }) {
-    const [isFallback, setIsFallback] = useState(false)
     const [coins, setCoins] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
     const loadCoinPrices = useCallback(async () => {
-
         if (!cryptoAssets || cryptoAssets.length === 0) {
             setIsLoading(false)
             return
         }
-        try{
+
+        try {
+            setIsLoading(true)
+            setError(null)
+
             const params = new URLSearchParams({
                 assets: cryptoAssets.join(',')
             })
 
-
             const response = await fetch(`http://localhost:3030/api/coin-prices?${params}`)
-
-
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
@@ -38,24 +27,18 @@ export function CoinPrices({ cryptoAssets }) {
 
             const data = await response.json()
 
+            // Transform the data into an array format
             const coinArray = Object.keys(data).map(coinId => ({
                 id: coinId,
                 name: coinId.charAt(0).toUpperCase() + coinId.slice(1),
                 price: data[coinId].usd,
                 change24h: data[coinId].usd_24h_change
             }))
+
             setCoins(coinArray)
-
-        }catch (err) {
+        } catch (err) {
             console.error('Error loading coin prices:', err)
-
-            // fallback: show static demo data filtered by user preferences
-            const idsSet = new Set((cryptoAssets || []).map(a => a.toLowerCase()))
-            const fallbackList = FALLBACK_COINS.filter(c => idsSet.has(c.id))
-
-            setCoins(fallbackList.length ? fallbackList : FALLBACK_COINS.slice(0, 3))
-            setIsFallback(true)
-            setError(null)
+            setError(err.message || 'Failed to load coin prices')
         } finally {
             setIsLoading(false)
         }
@@ -79,7 +62,12 @@ export function CoinPrices({ cryptoAssets }) {
         return (
             <div className="coin-prices-card">
                 <h2>Coin Prices</h2>
-                <p className="error">{error}</p>
+                <div className="error">
+                    <p>{error}</p>
+                    <button onClick={loadCoinPrices} className="refresh-btn">
+                        Retry
+                    </button>
+                </div>
             </div>
         )
     }
@@ -93,12 +81,18 @@ export function CoinPrices({ cryptoAssets }) {
         )
     }
 
+    if (coins.length === 0) {
+        return (
+            <div className="coin-prices-card">
+                <h2>Coin Prices</h2>
+                <p>No price data available</p>
+            </div>
+        )
+    }
+
     return (
         <div className="coin-prices-card">
-            {/* <h2>Coin Prices</h2> */}
-            <h2>
-                Coin Prices {isFallback && <span className="badge">Demo</span>}
-            </h2>
+            <h2>Coin Prices</h2>
             <div className="coin-list">
                 {coins.map(coin => (
                     <div key={coin.id} className="coin-item">
