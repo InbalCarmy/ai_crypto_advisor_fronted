@@ -35,9 +35,7 @@ async function login(userCred) {
 	if (user) return _saveLocalUser(user)
 }
 
-async function update(user) {  
-    console.log(`user/${user._id}`);
-      
+async function update(user) {        
 	const updatedUser = await httpService.put(`user/${user._id}`, user)
     const loggedinUser = getLoggedinUser()
     if (loggedinUser._id === updatedUser._id) _saveLocalUser(updatedUser)

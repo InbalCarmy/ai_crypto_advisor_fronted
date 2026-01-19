@@ -1,0 +1,33 @@
+
+
+
+.voting-buttons button{
+      background: transparent;  
+      border: none;
+}
+
+.voting-buttons button:hover{
+      background: transparent;  
+      border: none;
+}
+
+.emoji {
+  display: inline-block; /* חובה בשביל shadow */
+  font-size: 25px;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+
+
+.emoji.green:hover,
+.emoji.green.active{
+  filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.8));
+}
+
+.emoji.red:hover,
+.emoji.red.active {
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.8));
+}
+
+.emoji:hover {
+  transform: scale(1.1);
+}

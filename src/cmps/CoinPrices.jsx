@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
+import { VotingButtons } from "./VotingButtons"
+import { useSelector } from "react-redux"
+import { feedbackService } from "../services/feedback.service"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -7,6 +10,33 @@ export function CoinPrices({ cryptoAssets }) {
     const [coins, setCoins] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
+    const user = useSelector(storeState => storeState.userModule.user)
+    const [feedback, setFeedback] = useState([])
+
+    useEffect(() => {
+        // Only load feedback if user is logged in
+        if (user && user._id) {
+            loadFeedback()
+        }
+    }, [user])
+
+    async function loadFeedback(){
+        try{
+            const votes = await feedbackService.query({
+                userId: user._id,
+                sectionType: "coinPrices",
+            })
+            setFeedback(votes)
+        } catch (err) {
+            console.log('error load feedbacks from CoinPrice', err);
+        }
+    }
+
+    console.log("feedback:", feedback)
+    console.log('userid:', user)
+    
+    
+
 
     const loadCoinPrices = useCallback(async () => {
         if (!cryptoAssets || cryptoAssets.length === 0) {
@@ -105,6 +135,16 @@ export function CoinPrices({ cryptoAssets }) {
                         <div className={`coin-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
                             {coin.change24h >= 0 ? '▲' : '▼'} {Math.abs(coin.change24h).toFixed(2)}%
                         </div>
+                        {user && user._id && (
+                            <VotingButtons
+                                sectionType={'coinPrices'}
+                                contentId={coin.id}
+                                userId={user._id}
+                                metadata={{ coinName: coin.name, price: coin.price }}
+                                existingVote={feedback.find(v => v.contentId === coin.id)}
+                            />
+                        )}
+
                     </div>
                 ))}
             </div>
