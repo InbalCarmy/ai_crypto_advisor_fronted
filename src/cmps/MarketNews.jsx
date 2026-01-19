@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from "react"
 import { dailyRefreshService } from "../services/dailyRefresh.service"
+import { useSelector } from "react-redux"
+import { feedbackService } from "../services/feedback.service"
+import { VotingButtons } from "./VotingButtons"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -7,13 +10,32 @@ export function MarketNews({ preferences }) {
     const [news, setNews] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [feedback, setFeedback] = useState([])
+    const user = useSelector(storeState => storeState.userModule.user)
+
+    useEffect(() => {
+        loadFeedback()
+    },[])
+
+    async function loadFeedback(){
+        try{
+            const votes = await feedbackService.query({
+                userId: user._id,
+                sectionType: "marketNews",
+            })
+            setFeedback(votes)    
+        } catch (err) {
+            console.log('error load feedbacks fron CoinPrice', err);
+        }
+    }
+    
 
     const loadNews = useCallback(async () => {
         try {
             setIsLoading(true)
             setError(null)
 
-            //check if we nwwd to refresh data
+            //check if we need to refresh data
             if (!dailyRefreshService.shouldRefresh('marketNews')) {
                 const cachedNews = dailyRefreshService.getStoredData('marketNews')
                 if (cachedNews) {
@@ -126,18 +148,23 @@ export function MarketNews({ preferences }) {
                                 <div className="news-meta">
                                     <span className="news-source">{article.source}</span>
                                     <span className="news-time">{article.publishedAt}</span>
-                                </div>
+                                
+                                </div>                      
                             </div>
-                            {article.url && (
-                                <a
-                                    href={article.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="news-link"
-                                >
-                                    Read →
-                                </a> 
-                            )}
+                            <div className="news-btns">
+                                {article.url && (
+                                    <a
+                                        href={article.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="news-link"
+                                    >
+                                        Read →
+                                    </a> 
+                                )}    
+                                <VotingButtons sectionType={'marketNews'} contentId={article.id} userId={user._id} metadata={{articleTitle: article.title}} existingVote={feedback.find(v=> v.contentId === article.id)}/>
+                            </div>
+
 
                         </div>
                     ))}

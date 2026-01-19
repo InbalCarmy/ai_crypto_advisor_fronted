@@ -130,7 +130,7 @@ export function CoinPrices({ cryptoAssets }) {
                         <div className={`coin-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
                             {coin.change24h >= 0 ? '▲' : '▼'} {Math.abs(coin.change24h).toFixed(2)}%
                         </div>
-                        <VotingButtons sectionType={'coinPrices'} contentId={coin.coinId} userId={user._id} metadata={coin.name}/>
+                        <VotingButtons sectionType={'coinPrices'} contentId={coin.id} userId={user._id} metadata={{ coinName: coin.name, price: coin.price }} existingVote={feedback.find(v=> v.contentId === coin.id)}/>
 
                     </div>
                 ))}

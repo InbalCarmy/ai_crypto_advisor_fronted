@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react"
+import { VotingButtons } from "./VotingButtons"
+import { useSelector } from "react-redux"
+import { feedbackService } from "../services/feedback.service"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -7,10 +10,28 @@ export function CryptoMeme() {
     const [currentMeme, setCurrentMeme] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
+    const user = useSelector(storeState => storeState.userModule.user)
+    const [feedback, setFeedback] = useState([])
 
     useEffect(() => {
         loadRandomMeme()
     }, [])
+
+    useEffect(() => {
+        loadFeedback()
+    }, [])
+
+    async function loadFeedback(){
+        try{
+            const votes = await feedbackService.query({
+                userId: user._id,
+                sectionType: "cryptoMeme",
+            })
+            setFeedback(votes)    
+        } catch (err) {
+            console.log('error load feedbacks fron CoinPrice', err);
+        }
+    }
 
     async function loadRandomMeme() {
         try {
@@ -56,7 +77,10 @@ export function CryptoMeme() {
 
     return (
         <div className="crypto-meme-card">
-            <h2>Crypto Meme of the Day</h2>
+            <div className="title-meme">
+                <h2>Crypto Meme of the Day</h2>
+                <VotingButtons sectionType={'cryptoMeme'}  userId={user._id} metadata={currentMeme} existingVote={feedback.find(v => v.currentMeme === currentMeme)}/>
+            </div>
             <div className="meme-container">
                     <img
                         src={currentMeme}

@@ -9,7 +9,8 @@
 
 .card-header {
   display: flex;
-  gap: 12px;          
+  gap: 12px;  
+  align-items: center;        
 }
 
 .card-header h2{

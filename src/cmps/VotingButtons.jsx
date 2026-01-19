@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { feedbackService } from "../services/feedback.service"
 
-export function VotingButtons({ sectionType, contentId, userId, metadata = {}, existingVote = null }) {
+export function VotingButtons({ sectionType, contentId = '', userId, metadata = {}, existingVote = null }) {
     const [userVote, setUserVote] = useState(null) // 'up', 'down', or null
     const [isSubmitting, setIsSubmitting] = useState(false)
 

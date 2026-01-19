@@ -31,6 +31,7 @@
 
 .news-content {
     flex: 1;
+
 }
 
 .news-title {
@@ -70,4 +71,12 @@
 
 .news-link:hover {
     background-color: #e0e0e0;
+}
+
+.news-btns{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
