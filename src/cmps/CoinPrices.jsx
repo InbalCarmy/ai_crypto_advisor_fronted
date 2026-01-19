@@ -14,11 +14,8 @@ export function CoinPrices({ cryptoAssets }) {
     const [feedback, setFeedback] = useState([])
 
     useEffect(() => {
-        // Only load feedback if user is logged in
-        if (user && user._id) {
-            loadFeedback()
-        }
-    }, [user])
+        loadFeedback()
+    },[])
 
     async function loadFeedback(){
         try{
@@ -26,16 +23,14 @@ export function CoinPrices({ cryptoAssets }) {
                 userId: user._id,
                 sectionType: "coinPrices",
             })
-            setFeedback(votes)
+            setFeedback(votes)    
         } catch (err) {
-            console.log('error load feedbacks from CoinPrice', err);
+            console.log('error load feedbacks fron CoinPrice', err);
         }
     }
 
-    console.log("feedback:", feedback)
-    console.log('userid:', user)
-    
-    
+
+
 
 
     const loadCoinPrices = useCallback(async () => {
@@ -135,15 +130,7 @@ export function CoinPrices({ cryptoAssets }) {
                         <div className={`coin-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
                             {coin.change24h >= 0 ? '▲' : '▼'} {Math.abs(coin.change24h).toFixed(2)}%
                         </div>
-                        {user && user._id && (
-                            <VotingButtons
-                                sectionType={'coinPrices'}
-                                contentId={coin.id}
-                                userId={user._id}
-                                metadata={{ coinName: coin.name, price: coin.price }}
-                                existingVote={feedback.find(v => v.contentId === coin.id)}
-                            />
-                        )}
+                        <VotingButtons sectionType={'coinPrices'} contentId={coin.coinId} userId={user._id} metadata={coin.name}/>
 
                     </div>
                 ))}
