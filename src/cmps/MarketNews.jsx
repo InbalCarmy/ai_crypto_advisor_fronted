@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react"
-import { dailyRefreshService } from "../services/dailyRefresh.service"
 import { useSelector } from "react-redux"
 import { feedbackService } from "../services/feedback.service"
 import { VotingButtons } from "./VotingButtons"
@@ -36,16 +35,6 @@ export function MarketNews({ preferences }) {
             setIsLoading(true)
             setError(null)
 
-            // check if we need to refresh data
-            if (!dailyRefreshService.shouldRefresh('marketNews', user._id)) {
-                const cachedNews = dailyRefreshService.getStoredData('marketNews', user._id)
-                if (cachedNews) {
-                    console.log('Using cached market news from today')
-                    setNews(cachedNews)
-                    setIsLoading(false)
-                    return
-                }
-            }
 
             // Get user's selected crypto assets to filter news
             const cryptoAssets = preferences?.cryptoAssets || []
@@ -66,7 +55,8 @@ export function MarketNews({ preferences }) {
 
             // Call our backend API
             const params = new URLSearchParams({
-                currencies: currencies || 'BTC,ETH'
+                currencies: currencies || 'BTC,ETH',
+                userId: user._id
             })
 
             const response = await fetch(`${API_URL}/api/news?${params}`)
@@ -91,12 +81,8 @@ export function MarketNews({ preferences }) {
                           article.votes?.negative > article.votes?.positive ? 'negative' : 'neutral'
             }))
 
-            console.log("data after front:", articles);
-
 
             setNews(articles)
-            dailyRefreshService.storeData('marketNews', articles, user._id)
-            dailyRefreshService.markAsRefreshed('marketNews', user._id)
         } catch (err) {
             console.error('Error loading news:', err)
             setError(err.message || 'Failed to load news')
