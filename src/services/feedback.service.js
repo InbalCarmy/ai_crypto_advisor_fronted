@@ -16,6 +16,6 @@ async function addFeedback(voteData) {
 }
 
 
-async function query(filterBy = {userId: '', sectionType: ''}){
+async function query(filterBy = {userId: '', sectionType: '', date: ''}){
     return httpService.get('feedback', filterBy)
 }

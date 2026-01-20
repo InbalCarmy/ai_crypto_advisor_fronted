@@ -43,23 +43,34 @@ export function OnboardingPage(){
 
     async function handleSubmit(ev) {
         ev.preventDefault()
-        console.log('Selected preferences:', preferences)
 
+        if (preferences.cryptoAssets.length === 0) {
+            showErrorMsg('Please select at least one crypto asset')
+            return
+        }
+        if (preferences.investorType.length === 0) {
+            showErrorMsg('Please select at least one investor type')
+            return
+        }
+        if (preferences.contentKind.length === 0) {
+            showErrorMsg('Please select at least one content type')
+            return
+        }
+        console.log('Selected preferences:', preferences)
         try{
             const updatedUser = {
                 ...user,
                 preferences: preferences,
                 isOnboarded: true
             }
-            
+
             await updateUser(updatedUser)
             navigate('/dashboard')
-            showSuccessMsg('Youwr preferences have been saved')
+            showSuccessMsg('Your preferences have been saved')
         } catch (err){
             showErrorMsg('Can not save preferences')
             console.log('Faild to save preferences', err);
 
-            
         }
     }
 

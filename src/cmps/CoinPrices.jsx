@@ -19,9 +19,11 @@ export function CoinPrices({ cryptoAssets }) {
 
     async function loadFeedback(){
         try{
+            const today = new Date().toISOString().split('T')[0]
             const votes = await feedbackService.query({
                 userId: user._id,
                 sectionType: "coinPrices",
+                date: today
             })
             // Get the first (and only) vote for this section
             setExistingVote(votes[0] || null)

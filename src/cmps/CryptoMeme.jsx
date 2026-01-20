@@ -23,11 +23,13 @@ export function CryptoMeme() {
 
     async function loadFeedback(){
         try{
+            const today = new Date().toISOString().split('T')[0]
             const votes = await feedbackService.query({
                 userId: user._id,
                 sectionType: "cryptoMeme",
+                date: today
             })
-            // Get the first (and only) vote for this section
+            // Get the first (and only) vote for this section today
             setExistingVote(votes[0] || null)
         } catch (err) {
             console.log('error load feedbacks from CryptoMeme', err);
@@ -35,6 +37,7 @@ export function CryptoMeme() {
     }
 
     async function loadRandomMeme() {
+        
         try {
             setIsLoading(true)
             setError(null)
