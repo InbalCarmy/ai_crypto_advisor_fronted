@@ -31,9 +31,6 @@ export function CoinPrices({ cryptoAssets }) {
     }
 
 
-
-
-
     const loadCoinPrices = useCallback(async () => {
         if (!cryptoAssets || cryptoAssets.length === 0) {
             setIsLoading(false)
@@ -45,7 +42,8 @@ export function CoinPrices({ cryptoAssets }) {
             setError(null)
 
             const params = new URLSearchParams({
-                assets: cryptoAssets.join(',')
+                assets: cryptoAssets.join(','),
+                userId: user._id
             })
 
             const response = await fetch(`${API_URL}/api/coin-prices?${params}`)
