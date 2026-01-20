@@ -5,28 +5,31 @@ export const dailyRefreshService = {
     markAsRefreshed,
     getStoredData,
     storeData,
-    clearOldData
+    clearOldData,
 }
 
 
-function shouldRefresh(key) {
-    const today = new Date().toDateString() 
-    const lastFetchDate = localStorage.getItem(`${key}_lastFetch`)
+function shouldRefresh(key, userId = null) {
+    const storageKey = userId ? `${userId}_${key}` : key
+    const today = new Date().toDateString()
+    const lastFetchDate = localStorage.getItem(`${storageKey}_lastFetch`)
 
     // If never fetched or different day, should refresh
     return !lastFetchDate || lastFetchDate !== today
 }
 
 
-function markAsRefreshed(key) {
+function markAsRefreshed(key, userId = null) {
+    const storageKey = userId ? `${userId}_${key}` : key
     const today = new Date().toDateString()
-    localStorage.setItem(`${key}_lastFetch`, today)
+    localStorage.setItem(`${storageKey}_lastFetch`, today)
 }
 
 
-function getStoredData(key) {
+function getStoredData(key, userId = null) {
+    const storageKey = userId ? `${userId}_${key}` : key
     try {
-        const data = localStorage.getItem(`${key}_data`)
+        const data = localStorage.getItem(`${storageKey}_data`)
         return data ? JSON.parse(data) : null
     } catch (err) {
         console.error(`Error parsing stored data for ${key}:`, err)
@@ -35,16 +38,21 @@ function getStoredData(key) {
 }
 
 
-function storeData(key, data) {
+function storeData(key, data, userId = null) {
+    const storageKey = userId ? `${userId}_${key}` : key
     try {
-        localStorage.setItem(`${key}_data`, JSON.stringify(data))
+        localStorage.setItem(`${storageKey}_data`, JSON.stringify(data))
     } catch (err) {
         console.error(`Error storing data for ${key}:`, err)
     }
 }
 
 
-function clearOldData(key) {
-    localStorage.removeItem(`${key}_data`)
-    localStorage.removeItem(`${key}_lastFetch`)
+function clearOldData(key, userId = null) {
+    const storageKey = userId ? `${userId}_${key}` : key
+    localStorage.removeItem(`${storageKey}_data`)
+    localStorage.removeItem(`${storageKey}_lastFetch`)
 }
+
+
+

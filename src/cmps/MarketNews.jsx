@@ -36,8 +36,8 @@ export function MarketNews({ preferences }) {
             setError(null)
 
             // check if we need to refresh data
-            if (!dailyRefreshService.shouldRefresh('marketNews')) {
-                const cachedNews = dailyRefreshService.getStoredData('marketNews')
+            if (!dailyRefreshService.shouldRefresh('marketNews', user._id)) {
+                const cachedNews = dailyRefreshService.getStoredData('marketNews', user._id)
                 if (cachedNews) {
                     console.log('Using cached market news from today')
                     setNews(cachedNews)
@@ -63,7 +63,7 @@ export function MarketNews({ preferences }) {
                 .filter(Boolean)
                 .join(',')
 
-            // Call our backend API 
+            // Call our backend API
             const params = new URLSearchParams({
                 currencies: currencies || 'BTC,ETH'
             })
@@ -77,7 +77,7 @@ export function MarketNews({ preferences }) {
             const data = await response.json()
 
             console.log("data comes from beckend", data);
-            
+
 
             // Transform API response to our format
             const articles = data.results.map(article => ({
@@ -91,18 +91,18 @@ export function MarketNews({ preferences }) {
             }))
 
             console.log("data after front:", articles);
-            
+
 
             setNews(articles)
-            dailyRefreshService.storeData('marketNews', articles)
-            dailyRefreshService.markAsRefreshed('marketNews')
+            dailyRefreshService.storeData('marketNews', articles, user._id)
+            dailyRefreshService.markAsRefreshed('marketNews', user._id)
         } catch (err) {
             console.error('Error loading news:', err)
             setError(err.message || 'Failed to load news')
         } finally {
             setIsLoading(false)
         }
-    }, [preferences])
+    }, [preferences, user._id])
 
     useEffect(() => {
         loadNews()
