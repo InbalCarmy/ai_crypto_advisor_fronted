@@ -3,6 +3,7 @@ import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { updateUser } from "../store/user/user.actions"
 import { Link } from "react-router-dom"
+import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service"
 
 export function OnboardingPage(){
     const user = useSelector(storeState => storeState.userModule.user)
@@ -53,11 +54,13 @@ export function OnboardingPage(){
             
             await updateUser(updatedUser)
             navigate('/dashboard')
+            showSuccessMsg('Youwr preferences have been saved')
         } catch (err){
+            showErrorMsg('Can not save preferences')
             console.log('Faild to save preferences', err);
+
             
         }
-        // TODO: Save preferences to backend or store
     }
 
     if(!user){

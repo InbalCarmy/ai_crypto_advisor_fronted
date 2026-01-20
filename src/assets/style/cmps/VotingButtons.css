@@ -1,5 +1,7 @@
 
-
+.voting-buttons{
+  display: flex;
+}
 
 .voting-buttons button{
       background: transparent;  
@@ -12,7 +14,7 @@
 }
 
 .emoji {
-  display: inline-block; /* חובה בשביל shadow */
+  display: inline-block; 
   font-size: 25px;
   transition: filter 0.2s ease, transform 0.15s ease;
 }

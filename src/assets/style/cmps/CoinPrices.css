@@ -25,12 +25,14 @@
 
 .coin-item {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    /* justify-content: space-between; */
     align-items: center;
-    padding: 0.75rem;
+    padding: 0.75rem 0;
     background-color: white;
     border-radius: 6px;
     border: 1px solid #e0e0e0;
+    gap: 10px;
 }
 
 .coin-info {
@@ -52,8 +54,8 @@
 
 .coin-change {
     font-weight: 600;
-    font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    padding: 5px 5px;
     border-radius: 4px;
 }
 
@@ -72,4 +74,20 @@
     padding: 1rem;
     background-color: #fee2e2;
     border-radius: 4px;
+}
+
+@media (min-width: 430px){
+
+    .coin-item {
+        display: flex;
+        flex-direction: row;
+        justify-content:space-evenly;
+        padding: 0.75rem;
+        align-items: center;
+    }
+
+    .coin-change {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.5rem;
+    }
 }

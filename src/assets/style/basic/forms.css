@@ -6,7 +6,9 @@ button {
     font-family:'Courier New', Courier, monospace;
     font-optical-sizing: auto;    
     font-style: normal;
-    font-weight: 400;
+    font-weight:600;
+    color: black; 
+
 
 }
 
@@ -24,4 +26,11 @@ input, select {
     font-style: normal;
     font-weight: 400;
 };
+
+
+@media (min-width: 670px){
+    button{
+        font-weight: 400;
+    }
+}
 

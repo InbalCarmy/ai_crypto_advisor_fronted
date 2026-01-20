@@ -35,7 +35,7 @@ export function MarketNews({ preferences }) {
             setIsLoading(true)
             setError(null)
 
-            //check if we need to refresh data
+            // check if we need to refresh data
             if (!dailyRefreshService.shouldRefresh('marketNews')) {
                 const cachedNews = dailyRefreshService.getStoredData('marketNews')
                 if (cachedNews) {
@@ -76,6 +76,9 @@ export function MarketNews({ preferences }) {
 
             const data = await response.json()
 
+            console.log("data comes from beckend", data);
+            
+
             // Transform API response to our format
             const articles = data.results.map(article => ({
                 id: article.id,
@@ -86,6 +89,9 @@ export function MarketNews({ preferences }) {
                 sentiment: article.votes?.positive > article.votes?.negative ? 'positive' :
                           article.votes?.negative > article.votes?.positive ? 'negative' : 'neutral'
             }))
+
+            console.log("data after front:", articles);
+            
 
             setNews(articles)
             dailyRefreshService.storeData('marketNews', articles)

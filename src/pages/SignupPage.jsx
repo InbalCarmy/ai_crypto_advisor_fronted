@@ -32,7 +32,7 @@ export function SignupPage(){
     return(
         <section className="signup-page">
             <form className="signup-form" onSubmit={onSignup}>
-                <label htmlFor="name">name:</label>
+                <label htmlFor="name">Name:</label>
                 <input 
                     type="text"
                     placeholder="Enter name"

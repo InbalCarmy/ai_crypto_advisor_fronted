@@ -22,6 +22,7 @@
 @import './pages/LoginPage.css';
 @import './pages/SignupPage.css';
 @import './pages/Dashboard.css';
+@import './pages/OnboardingPage.css';
 
 
 @import './setup/var.css';

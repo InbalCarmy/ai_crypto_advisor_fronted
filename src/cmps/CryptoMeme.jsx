@@ -79,7 +79,7 @@ export function CryptoMeme() {
         <div className="crypto-meme-card">
             <div className="title-meme">
                 <h2>Crypto Meme of the Day</h2>
-                <VotingButtons sectionType={'cryptoMeme'}  userId={user._id} metadata={currentMeme} existingVote={feedback.find(v => v.currentMeme === currentMeme)}/>
+                <VotingButtons sectionType={'cryptoMeme'}  userId={user._id} metadata={{meme: currentMeme}} existingVote={feedback.find(v => v.currentMeme === currentMeme)}/>
             </div>
             <div className="meme-container">
                     <img
