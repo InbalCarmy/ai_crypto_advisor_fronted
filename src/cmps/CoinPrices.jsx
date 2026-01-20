@@ -25,7 +25,6 @@ export function CoinPrices({ cryptoAssets }) {
                 sectionType: "coinPrices",
                 date: today
             })
-            // Get the first (and only) vote for this section
             setExistingVote(votes[0] || null)
         } catch (err) {
             console.log('error load feedbacks from CoinPrices', err);
@@ -34,10 +33,17 @@ export function CoinPrices({ cryptoAssets }) {
 
 
     const loadCoinPrices = useCallback(async () => {
+
         if (!cryptoAssets || cryptoAssets.length === 0) {
             setIsLoading(false)
             return
         }
+
+        if (!user || !user._id) {
+            setIsLoading(false)
+            return
+        }
+        
 
         try {
             setIsLoading(true)
@@ -70,7 +76,7 @@ export function CoinPrices({ cryptoAssets }) {
         } finally {
             setIsLoading(false)
         }
-    }, [cryptoAssets])
+    }, [cryptoAssets, user])
 
     useEffect(() => {
         loadCoinPrices()

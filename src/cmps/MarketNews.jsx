@@ -69,8 +69,6 @@ export function MarketNews({ preferences }) {
 
             const data = await response.json()
 
-            console.log("data comes from beckend", data);
-
 
             // Transform API response to our format
             const articles = data.results.map(article => ({

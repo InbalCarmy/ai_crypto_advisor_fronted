@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { feedbackService } from "../services/feedback.service"
 
 export function VotingButtons({ sectionType, userId, existingVote = null }) {
-    const [userVote, setUserVote] = useState(null)
+    const [userVote, setUserVote] = useState(null) //for UI
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
@@ -25,7 +25,6 @@ export function VotingButtons({ sectionType, userId, existingVote = null }) {
                 vote: newVote
             })
 
-            // Update UI based on response
             if (response && response.vote !== undefined) {
                 setUserVote(response.vote)
             } else {

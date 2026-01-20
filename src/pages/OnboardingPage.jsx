@@ -56,7 +56,6 @@ export function OnboardingPage(){
             showErrorMsg('Please select at least one content type')
             return
         }
-        console.log('Selected preferences:', preferences)
         try{
             const updatedUser = {
                 ...user,

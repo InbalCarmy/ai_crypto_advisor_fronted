@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { dailyRefreshService } from "../services/dailyRefresh.service"
 import { useSelector } from "react-redux"
 import { feedbackService } from "../services/feedback.service"
 import { VotingButtons } from "./VotingButtons"
