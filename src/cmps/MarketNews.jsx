@@ -10,7 +10,7 @@ export function MarketNews({ preferences }) {
     const [news, setNews] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [feedback, setFeedback] = useState([])
+    const [existingVote, setExistingVote] = useState(null)
     const user = useSelector(storeState => storeState.userModule.user)
 
     useEffect(() => {
@@ -23,9 +23,10 @@ export function MarketNews({ preferences }) {
                 userId: user._id,
                 sectionType: "marketNews",
             })
-            setFeedback(votes)    
+            // Get the first (and only) vote for this section
+            setExistingVote(votes[0] || null)
         } catch (err) {
-            console.log('error load feedbacks fron CoinPrice', err);
+            console.log('error load feedbacks from MarketNews', err);
         }
     }
     
@@ -142,7 +143,11 @@ export function MarketNews({ preferences }) {
 
     return (
         <div className="market-news-card">
-            <h2>Market News</h2>
+            <div className="market-news-title">
+                <h2>Market News</h2>
+                <VotingButtons sectionType="marketNews" userId={user._id} existingVote={existingVote} />
+            </div>
+
             {news.length === 0 ? (
                 <p>No news available at the moment.</p>
             ) : (
@@ -168,10 +173,7 @@ export function MarketNews({ preferences }) {
                                         Read →
                                     </a> 
                                 )}    
-                                <VotingButtons sectionType={'marketNews'} contentId={article.id} userId={user._id} metadata={{articleTitle: article.title}} existingVote={feedback.find(v=> v.contentId === article.id)}/>
                             </div>
-
-
                         </div>
                     ))}
                 </div>

@@ -11,7 +11,7 @@ export function CryptoMeme() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const user = useSelector(storeState => storeState.userModule.user)
-    const [feedback, setFeedback] = useState([])
+    const [existingVote, setExistingVote] = useState(null)
 
     useEffect(() => {
         loadRandomMeme()
@@ -27,9 +27,10 @@ export function CryptoMeme() {
                 userId: user._id,
                 sectionType: "cryptoMeme",
             })
-            setFeedback(votes)    
+            // Get the first (and only) vote for this section
+            setExistingVote(votes[0] || null)
         } catch (err) {
-            console.log('error load feedbacks fron CoinPrice', err);
+            console.log('error load feedbacks from CryptoMeme', err);
         }
     }
 
@@ -79,7 +80,7 @@ export function CryptoMeme() {
         <div className="crypto-meme-card">
             <div className="title-meme">
                 <h2>Crypto Meme of the Day</h2>
-                <VotingButtons sectionType={'cryptoMeme'}  userId={user._id} metadata={{meme: currentMeme}} existingVote={feedback.find(v => v.currentMeme === currentMeme)}/>
+                <VotingButtons sectionType="cryptoMeme" userId={user._id} existingVote={existingVote} />
             </div>
             <div className="meme-container">
                     <img

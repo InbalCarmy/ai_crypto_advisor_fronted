@@ -11,7 +11,7 @@ export function CoinPrices({ cryptoAssets }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const user = useSelector(storeState => storeState.userModule.user)
-    const [feedback, setFeedback] = useState([])
+    const [existingVote, setExistingVote] = useState(null)
 
     useEffect(() => {
         loadFeedback()
@@ -23,9 +23,10 @@ export function CoinPrices({ cryptoAssets }) {
                 userId: user._id,
                 sectionType: "coinPrices",
             })
-            setFeedback(votes)    
+            // Get the first (and only) vote for this section
+            setExistingVote(votes[0] || null)
         } catch (err) {
-            console.log('error load feedbacks fron CoinPrice', err);
+            console.log('error load feedbacks from CoinPrices', err);
         }
     }
 
@@ -119,7 +120,10 @@ export function CoinPrices({ cryptoAssets }) {
 
     return (
         <div className="coin-prices-card">
-            <h2>Coin Prices</h2>
+            <div className="coin-price-title">
+                <h2>Coin Prices</h2>
+                <VotingButtons sectionType="coinPrices" userId={user._id} existingVote={existingVote} />
+            </div>
             <div className="coin-list">
                 {coins.map(coin => (
                     <div key={coin.id} className="coin-item">
@@ -130,8 +134,6 @@ export function CoinPrices({ cryptoAssets }) {
                         <div className={`coin-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
                             {coin.change24h >= 0 ? '▲' : '▼'} {Math.abs(coin.change24h).toFixed(2)}%
                         </div>
-                        <VotingButtons sectionType={'coinPrices'} contentId={coin.id} userId={user._id} metadata={{ coinName: coin.name, price: coin.price }} existingVote={feedback.find(v=> v.contentId === coin.id)}/>
-
                     </div>
                 ))}
             </div>

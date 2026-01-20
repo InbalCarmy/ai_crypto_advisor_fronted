@@ -12,7 +12,7 @@ export function AIInsight({ preferences }) {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const user = useSelector(storeState => storeState.userModule.user)
-    const [feedback, setFeedback] = useState([])
+    const [existingVote, setExistingVote] = useState(null)
 
     useEffect(() => {
         loadInsight()
@@ -28,9 +28,10 @@ export function AIInsight({ preferences }) {
                 userId: user._id,
                 sectionType: "aiInsight",
             })
-            setFeedback(votes)    
+            // Get the first (and only) vote for this section
+            setExistingVote(votes[0] || null)
         } catch (err) {
-            console.log('error load feedbacks fron CoinPrice', err);
+            console.log('error load feedbacks from AIInsight', err);
         }
     }
 
@@ -100,7 +101,7 @@ export function AIInsight({ preferences }) {
         <div className="ai-insight-card">
         <div className="card-header">
             <h2>AI Insight of the Day</h2>
-            <VotingButtons sectionType={'aiInsight'} userId={user._id} metadata={{aiInsight: insight}} existingVote={feedback.find(v=> v.metadata.aiInsight === insight)}/>
+            <VotingButtons sectionType="aiInsight" userId={user._id} existingVote={existingVote} />
         </div>
         <div className="insight-content">
         <p className="insight-text">{insight}</p>

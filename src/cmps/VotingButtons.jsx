@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { feedbackService } from "../services/feedback.service"
 
-export function VotingButtons({ sectionType, contentId = '', userId, metadata = {}, existingVote = null }) {
+export function VotingButtons({ sectionType, userId, existingVote = null }) {
     const [userVote, setUserVote] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -13,31 +13,6 @@ export function VotingButtons({ sectionType, contentId = '', userId, metadata = 
         }
     }, [existingVote])
 
-    // async function handleVote(vote) {
-    //     //if user clicks the same vote, remove it
-    //     const newVote = userVote === vote ? null : vote        
-
-    //     try {
-    //         setIsSubmitting(true)
-
-    //         await feedbackService.addFeedback({
-    //             userId,
-    //             sectionType,
-    //             contentId,
-    //             vote: newVote,
-    //             metadata,
-    //             timestamp: new Date().toISOString()
-    //         })
-
-    //         setUserVote(newVote)
-
-    //     } catch (err) {
-    //         console.error('Error submitting vote:', err)
-    //     } finally {
-    //         setIsSubmitting(false)
-    //     }
-    // }
-
     async function handleVote(vote) {
         const newVote = userVote === vote ? null : vote
 
@@ -47,14 +22,12 @@ export function VotingButtons({ sectionType, contentId = '', userId, metadata = 
             const response = await feedbackService.addFeedback({
                 userId,
                 sectionType,
-                contentId,
-                vote: newVote,
-                metadata,
-                timestamp: new Date().toISOString()
+                vote: newVote
             })
 
-            if (response.feedback) {
-                setUserVote(response.feedback.vote)
+            // Update UI based on response
+            if (response && response.vote !== undefined) {
+                setUserVote(response.vote)
             } else {
                 setUserVote(newVote)
             }

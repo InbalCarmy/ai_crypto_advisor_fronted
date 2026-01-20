@@ -6,6 +6,11 @@
     margin-top: 0;
     margin-bottom: 1rem;
 }
+.market-news-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .news-list {
     display: flex;

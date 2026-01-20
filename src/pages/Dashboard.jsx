@@ -24,7 +24,7 @@ export function Dashboard(){
 
     return(
         <section className="dashboard-page">
-            <h1>Welcome back, {user.name}!</h1>
+            <h1>Welcome back, {user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase()}!</h1>
 
             <div className="dashboard-grid">
                 <CoinPrices cryptoAssets={user.preferences?.cryptoAssets || []} />
