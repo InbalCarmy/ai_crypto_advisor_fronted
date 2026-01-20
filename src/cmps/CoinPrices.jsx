@@ -54,7 +54,9 @@ export function CoinPrices({ cryptoAssets }) {
                 userId: user._id
             })
 
-            const response = await fetch(`${API_URL}/api/coin-prices?${params}`)
+            const response = await fetch(`${API_URL}/api/coin-prices?${params}`, {
+                credentials: 'include'
+            })
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)

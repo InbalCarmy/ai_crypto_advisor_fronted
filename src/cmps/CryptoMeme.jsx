@@ -43,7 +43,9 @@ export function CryptoMeme() {
             setError(null)
 
 
-            const response = await fetch(`${API_URL}/api/meme`)
+            const response = await fetch(`${API_URL}/api/meme`, {
+                credentials: 'include'
+            })
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)

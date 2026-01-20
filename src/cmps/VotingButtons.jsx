@@ -64,3 +64,4 @@ export function VotingButtons({ sectionType, userId, existingVote = null }) {
         </div>
     )
 }
+

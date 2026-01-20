@@ -50,7 +50,9 @@ export function AIInsight({ preferences }) {
                 userId: user._id
             })
 
-            const response = await fetch(`${API_URL}/api/ai-insight?${params}`)
+            const response = await fetch(`${API_URL}/api/ai-insight?${params}`, {
+                credentials: 'include'
+            })
 
             if (!response.ok) {
                 throw new Error(`API Error: ${response.status}`)
